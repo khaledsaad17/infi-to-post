@@ -1,0 +1,132 @@
+#include<bits/stdc++.h>
+using namespace std;
+// stack begin
+struct node
+{
+    char data;
+    node*next;
+};
+node*top=NULL;
+void push(char value)
+{
+    node*newnode=new node;
+    newnode->next=top;
+    newnode->data=value;
+    top=newnode;
+}
+void pop()
+{
+    if(top==NULL)
+    {
+        cout<<"stack is empty\n";
+    }else
+    {
+        cout<<"the element popped is => "<<top->data;
+        top=top->next;
+    }
+}
+//stack end
+////////////////////////////////////////////////////////////////////
+// infex to postfex begin
+bool stack_is_empty ()
+{
+    if (top==NULL)
+    {
+        return true;
+    }else
+    {
+        return false;
+    }
+    
+}
+bool is_operatnt(char c)
+{
+    if (c!='*'&&c!='+'&&c!='-'&&c!='/')
+    {
+        return true;
+    }else
+    {
+        return false;
+    }
+}
+bool is_operat(char c)
+{
+    if (c=='*'||c=='+'||c=='-'||c=='/')
+    {
+        return true;
+    }else
+    {
+        return false;
+    }
+}
+int comp_operat(char c)
+{
+    if (c=='*'||c=='/')
+    {
+        return 2;
+    }else if (c=='-'||c=='+')
+    {
+        return 1;
+    }
+}
+void infextopostfex(string in)
+{
+    string out="";
+    int x=0;
+   for (int i = 0; i < in.length(); i++)
+   {
+        if (in[i]=='(')
+        {
+            push(in[i]);
+            x=0;
+        }else if (in[i]==')')
+        {
+            while ( !stack_is_empty() && top->data!='(')
+            {
+                out=out+top->data;
+                pop();
+            }
+            pop();
+            if (stack_is_empty())
+            {
+                x=0;
+            }
+            
+            
+        }else if (is_operatnt(in[i]))
+        {
+            out=out+in[i];
+            
+        }else if (is_operat(in[i])&&x==0)
+        {
+            push(in[i]);
+            x++;
+        }else if (!stack_is_empty() && comp_operat(top->data) < comp_operat(in[i]))
+        {
+            push(in[i]);
+        }else 
+        {
+            while (!stack_is_empty() && comp_operat(top->data) >= comp_operat(in[i]) && top->data!='(' )
+            {
+                out=out+top->data;
+                pop();
+            }
+            push(in[i]);
+        }
+   }
+   while (!stack_is_empty())
+   {
+        out=out+top->data;
+        pop();
+   }
+    cout<<"\n\n\n"<<out<<"\n";
+}
+
+
+
+int main()
+{
+    string s;
+    cin>>s;
+    infextopostfex(s);
+}
